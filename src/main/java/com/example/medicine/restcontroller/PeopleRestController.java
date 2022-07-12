@@ -4,7 +4,7 @@ import com.example.medicine.domain.Employee;
 import com.example.medicine.domain.Patients;
 import com.example.medicine.domain.People;
 import com.example.medicine.repository.PeopleRepository;
-import com.example.medicine.service.PeopleService;
+import com.example.medicine.serviceimpl.service.PeopleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/people")
 public class PeopleRestController {
+
     private PeopleService peopleService;
     private PeopleRepository peopleRepository;
 
@@ -27,13 +28,16 @@ public class PeopleRestController {
     @GetMapping("/{id}")
     public ResponseEntity<People> findById(@PathVariable Long id){
         return peopleRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .map(people1 -> {
+                    People people = peopleService.findById(id);
+                    return ResponseEntity.ok().body(people);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<People> save(@RequestBody People people){
-        return ResponseEntity.status(HttpStatus.CREATED).body(peopleRepository.save(people));
+        return ResponseEntity.status(HttpStatus.CREATED).body(peopleService.save(people));
     }
 
     @PutMapping("/{id}")
@@ -107,7 +111,7 @@ public class PeopleRestController {
                         }
                         people.setPatients(patients);
                     }
-                    return ResponseEntity.ok().body(peopleRepository.save(people));
+                    return ResponseEntity.ok().body(peopleService.save(people));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -116,7 +120,7 @@ public class PeopleRestController {
     public ResponseEntity<People> deleteById(@PathVariable Long id){
         return peopleRepository.findById(id)
                 .map(people -> {
-                    peopleRepository.deleteById(people.getId());
+                    peopleService.delete(people.getId());
                     return ResponseEntity.ok().body(people);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

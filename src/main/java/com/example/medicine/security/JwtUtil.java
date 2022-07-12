@@ -18,6 +18,9 @@ public class JwtUtil {
     @Value("${jwt.token.secret}")
     private String secret;
 
+    @Value("${jwt.token.expired}")
+    private Long time;
+
     private  <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -51,7 +54,7 @@ public class JwtUtil {
 
     private String doGenerateToken(Map<String, Object> claims, String subject){
         Date issuedDate = new Date();
-        Date expiredDate = new Date(issuedDate.getTime() + 60 * 60 * 1000);
+        Date expiredDate = new Date(issuedDate.getTime() + 60 * 60 * time);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)

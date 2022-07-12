@@ -11,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Patients {
+
     @Id
     @Column(name = "patients_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)

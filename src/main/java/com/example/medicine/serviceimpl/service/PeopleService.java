@@ -1,4 +1,4 @@
-package com.example.medicine.service;
+package com.example.medicine.serviceimpl.service;
 
 import com.example.medicine.domain.People;
 

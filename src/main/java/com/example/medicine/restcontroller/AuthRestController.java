@@ -26,7 +26,7 @@ public class AuthRestController {
         try{
             authenticate(user.getUsername(), user.getPassword());
         }catch(BadCredentialsException ex){
-            throw new Exception("Incorrect username or password", ex);
+            throw new Exception("INCORRECT USERNAME OR PASSWORD", ex);
         }
         UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         String token = jwtUtil.generateToken(userDetails);

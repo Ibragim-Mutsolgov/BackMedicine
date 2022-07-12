@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class People {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,7 +51,7 @@ public class People {
     @JoinColumn(name = "employee_employee_id", referencedColumnName = "employee_id")
     private Employee employee;
 
-    public People(String surname, String name, String patronymic, LocalDate date, int gender, String placeBirth, Long passportSeries, Long passportNumber, String passportIssue, LocalDate dateIssue, String departmentCode, String region, String station, String locality, String street) {
+    public People(String surname, String name, String patronymic, LocalDate date, int gender, String placeBirth, Long passportSeries, Long passportNumber, String passportIssue, LocalDate dateIssue, String departmentCode, String region, String station, String locality, String street, Patients patients, Employee employee) {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
@@ -66,5 +67,7 @@ public class People {
         this.station = station;
         this.locality = locality;
         this.street = street;
+        this.patients = patients;
+        this.employee = employee;
     }
 }

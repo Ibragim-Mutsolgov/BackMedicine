@@ -2,7 +2,7 @@ package com.example.medicine.restcontroller;
 
 import com.example.medicine.domain.Employee;
 import com.example.medicine.repository.EmployeeRepository;
-import com.example.medicine.service.EmployeeService;
+import com.example.medicine.serviceimpl.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,24 +14,28 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/employee")
 public class EmployeeRestController {
+
     private EmployeeService employeeService;
     private EmployeeRepository employeeRepository;
 
     @GetMapping
     public ResponseEntity<List<Employee>> findAll(){
-        return ResponseEntity.ok(employeeRepository.findAll());
+        return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> findById(@PathVariable Long id){
         return employeeRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .map(employee1 -> {
+                    Employee employee = employeeService.findById(id);
+                    return ResponseEntity.ok().body(employee);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Employee> save(@RequestBody Employee employee){
-        return ResponseEntity.status(HttpStatus.CREATED).body(employeeRepository.save(employee));
+        return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.save(employee));
     }
 
     @PutMapping("/{id}")
@@ -41,7 +45,7 @@ public class EmployeeRestController {
         return employeeRepository.findById(id)
                 .map(employee1 -> {
                     employee1.setEmployee_name(employee.getEmployee_name());
-                    return ResponseEntity.ok().body(employeeRepository.save(employee1));
+                    return ResponseEntity.ok().body(employeeService.save(employee1));
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -49,7 +53,7 @@ public class EmployeeRestController {
     public ResponseEntity<Employee> deleteById(@PathVariable Long id){
         return employeeRepository.findById(id)
                 .map(employee -> {
-                    employeeRepository.deleteById(id);
+                    employeeService.delete(id);
                     return ResponseEntity.ok().body(employee);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

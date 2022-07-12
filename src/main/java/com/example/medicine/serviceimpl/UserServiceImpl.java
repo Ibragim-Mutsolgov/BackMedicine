@@ -2,9 +2,8 @@ package com.example.medicine.serviceimpl;
 
 import com.example.medicine.domain.User;
 import com.example.medicine.repository.UserRepository;
-import com.example.medicine.service.UserService;
+import com.example.medicine.serviceimpl.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@NoArgsConstructor
+@Transactional
 @AllArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -31,34 +30,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findById(Long id) {
-        return usersRepository.findById(id).get();
+        User user = usersRepository.findById(id).get();
+        log.info("IN UserServiceImpl: USER " + user.getUsername() + " FOUND");
+        return user;
     }
 
     @Override
     public User findByUsername(String username) {
-        return usersRepository.findByUsername(username);
+        User user = usersRepository.findByUsername(username);
+        log.info("IN UserServiceImpl: USER " + user.getUsername() + " FOUND");
+        return user;
     }
 
     @Override
     public User save(User user) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return usersRepository.save(user);
+        usersRepository.save(user);
+        log.info("IN UserServiceImpl: USER " + user.getUsername() + " SAVED");
+        return user;
     }
 
     @Override
     public void delete(Long id) {
+        User user = usersRepository.findById(id).get();
         usersRepository.deleteById(id);
+        log.info("IN UserServiceImpl: USER " + user.getUsername() + " DELETED");
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User users = usersRepository.findByUsername(username);
         if(users == null){
-            log.info("IN UsersServiceImpl - user: " + username + " not found in database");
+            log.info("IN UsersServiceImpl: USER " + username + " NOT FOUND IN DATABASE");
         } else{
+            log.info("IN UsersServiceImpl: USER " + username + " FOUND IN DATABASE");
             return new User(users.getUsername(), users.getPassword(), users.getRole());
         }
-        throw new UsernameNotFoundException("IN UsersServiceImpl - user: " + username + " not found in database");
+        throw new UsernameNotFoundException("IN UsersServiceImpl: USER " + username + " NOT FOUND IN DATABASE");
     }
 }

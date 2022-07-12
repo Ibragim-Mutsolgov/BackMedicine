@@ -34,7 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try{
                 username = jwtUtil.getUsernameFromToken(jwt);
             }catch(Exception e){
-                log.info("Token is invalid: " + e.getMessage());
+                log.info("TOKEN IS INVALID: " + e.getMessage());
             }
         }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){

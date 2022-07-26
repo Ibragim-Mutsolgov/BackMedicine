@@ -39,6 +39,13 @@ public class PatientsRestController {
     }
 
     @PutMapping("/{id}")
+    public ResponseEntity<Patients> resave(@PathVariable Long id, @RequestBody Patients patients){
+        return patientsRepository.findById(id)
+                .map(patients1 -> ResponseEntity.ok().body(patientsService.save(patients)))
+                .orElseGet(()-> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
     public ResponseEntity<Patients> reSave(@PathVariable Long id, @RequestBody Patients patients){
         return patientsRepository.findById(id)
                 .map(patients1 -> {

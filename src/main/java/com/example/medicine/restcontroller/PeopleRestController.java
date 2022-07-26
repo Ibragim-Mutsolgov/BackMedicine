@@ -41,6 +41,13 @@ public class PeopleRestController {
     }
 
     @PutMapping("/{id}")
+    public ResponseEntity<People> resave(@PathVariable Long id, @RequestBody People people){
+        return peopleRepository.findById(id)
+                .map(people1 -> ResponseEntity.ok().body(peopleService.save(people)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
     public ResponseEntity<People> reSave(
             @PathVariable Long id,
             @RequestBody People peo){

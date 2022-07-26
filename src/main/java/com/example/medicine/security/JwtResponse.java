@@ -1,4 +1,4 @@
-package com.example.medicine.domain;
+package com.example.medicine.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

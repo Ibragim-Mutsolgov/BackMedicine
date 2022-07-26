@@ -4,7 +4,7 @@ import com.example.medicine.domain.Employee;
 import com.example.medicine.domain.Patients;
 import com.example.medicine.domain.People;
 import com.example.medicine.repository.PeopleRepository;
-import com.example.medicine.serviceimpl.service.PeopleService;
+import com.example.medicine.service.PeopleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,36 +14,36 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/people")
+@RequestMapping(path = "/people",
+        consumes = "application/json")
 public class PeopleRestController {
 
-    private PeopleService peopleService;
-    private PeopleRepository peopleRepository;
+    private PeopleService service;
+
+    private PeopleRepository repository;
 
     @GetMapping
     public ResponseEntity<List<People>> findAll(){
-        return ResponseEntity.ok(peopleService.findAll());
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<People> findById(@PathVariable Long id){
-        return peopleRepository.findById(id)
-                .map(people1 -> {
-                    People people = peopleService.findById(id);
-                    return ResponseEntity.ok().body(people);
-                })
+        return repository.findById(id)
+                .map(people -> ResponseEntity.ok().body(people))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<People> save(@RequestBody People people){
-        return ResponseEntity.status(HttpStatus.CREATED).body(peopleService.save(people));
+        return ResponseEntity.ok(service.save(people));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<People> resave(@PathVariable Long id, @RequestBody People people){
-        return peopleRepository.findById(id)
-                .map(people1 -> ResponseEntity.ok().body(peopleService.save(people)))
+        return repository.findById(id)
+                .map(people1 -> ResponseEntity.ok().body(service.save(people)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -51,7 +51,7 @@ public class PeopleRestController {
     public ResponseEntity<People> reSave(
             @PathVariable Long id,
             @RequestBody People peo){
-        return peopleRepository.findById(id)
+        return repository.findById(id)
                 .map(people -> {
                     if(peo.getSurname() != null){
                         people.setSurname(peo.getSurname());
@@ -118,16 +118,17 @@ public class PeopleRestController {
                         }
                         people.setPatients(patients);
                     }
-                    return ResponseEntity.ok().body(peopleService.save(people));
+                    return ResponseEntity.ok().body(service.save(people));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<People> deleteById(@PathVariable Long id){
-        return peopleRepository.findById(id)
+        return repository.findById(id)
                 .map(people -> {
-                    peopleService.delete(people.getId());
+                    service.delete(people.getId());
                     return ResponseEntity.ok().body(people);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

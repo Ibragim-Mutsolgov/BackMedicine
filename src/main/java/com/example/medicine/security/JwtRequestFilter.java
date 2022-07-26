@@ -1,6 +1,6 @@
 package com.example.medicine.security;
 
-import com.example.medicine.serviceimpl.UserServiceImpl;
+import com.example.medicine.service.serviceimpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +22,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserServiceImpl userService;
+
     private final JwtUtil jwtUtil;
 
     @Override

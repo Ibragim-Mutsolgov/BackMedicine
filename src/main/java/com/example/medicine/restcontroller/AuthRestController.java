@@ -1,9 +1,9 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.JwtResponse;
+import com.example.medicine.security.JwtResponse;
 import com.example.medicine.domain.User;
 import com.example.medicine.security.JwtUtil;
-import com.example.medicine.serviceimpl.UserServiceImpl;
+import com.example.medicine.service.serviceimpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRestController {
 
     private final JwtUtil jwtUtil;
+
     private final UserServiceImpl userService;
+
     private final AuthenticationManager authenticationManager;
 
     @PostMapping

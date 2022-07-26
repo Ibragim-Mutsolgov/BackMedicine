@@ -21,8 +21,11 @@ public class User implements UserDetails {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String username;
+
     private String password;
+
     private Role role;
 
     public User(String username, String password, Role role) {

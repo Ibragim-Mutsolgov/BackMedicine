@@ -21,25 +21,37 @@ public class People {
 
     //ФИО, дата рождения, пол, место рождения
     private String surname; // Фамилия
+
     private String name; // Имя
+
     private String patronymic; // Отчество
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate date; // Дата рождения
+
     private int gender; // Пол
+
     private String placeBirth; // Место рождения
 
     //Серия и номер паспорта, кем выдан и когда, код подразделения
     private Long passportSeries; // Паспорт - серия
+
     private Long passportNumber; // Паспорт - номер
+
     private String passportIssue; // Паспорт выдан
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate dateIssue; // Дата выдачи
+
     private String departmentCode; // Код подразделения
 
     //Регион, пункт, район, улица
     private String region; // Регион
+
     private String station; // Пункт
+
     private String locality; // Район
+
     private String street; // Улица
 
     //OneToOne

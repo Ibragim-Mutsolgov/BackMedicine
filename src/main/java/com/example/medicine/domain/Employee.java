@@ -16,6 +16,7 @@ public class Employee {
     @Column(name = "employee_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long employee_id;
+
     private String employee_name;
 
     public Employee(String employee_name) {

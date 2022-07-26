@@ -3,7 +3,7 @@ package com.example.medicine.initial;
 import com.example.medicine.domain.Employee;
 import com.example.medicine.domain.Patients;
 import com.example.medicine.domain.People;
-import com.example.medicine.serviceimpl.service.PeopleService;
+import com.example.medicine.service.PeopleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

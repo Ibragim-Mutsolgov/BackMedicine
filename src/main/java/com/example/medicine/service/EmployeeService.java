@@ -1,12 +1,16 @@
-package com.example.medicine.serviceimpl.service;
+package com.example.medicine.service;
 
 import com.example.medicine.domain.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
+
     List<Employee> findAll();
+
     Employee findById(Long id);
+
     Employee save(Employee employee);
+
     void delete(Long id);
 }

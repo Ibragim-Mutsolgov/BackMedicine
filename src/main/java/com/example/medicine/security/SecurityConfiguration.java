@@ -1,6 +1,6 @@
 package com.example.medicine.security;
 
-import com.example.medicine.serviceimpl.UserServiceImpl;
+import com.example.medicine.service.serviceimpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserServiceImpl userService;
+
     private final JwtRequestFilter jwtRequestFilter;
 
     @Override

@@ -1,13 +1,13 @@
-package com.example.medicine.serviceimpl;
+package com.example.medicine.service.serviceimpl;
 
 import com.example.medicine.domain.Employee;
 import com.example.medicine.repository.EmployeeRepository;
-import com.example.medicine.serviceimpl.service.EmployeeService;
+import com.example.medicine.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Slf4j

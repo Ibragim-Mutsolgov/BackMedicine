@@ -2,7 +2,7 @@ package com.example.medicine.initial;
 
 import com.example.medicine.domain.Role;
 import com.example.medicine.domain.User;
-import com.example.medicine.serviceimpl.service.UserService;
+import com.example.medicine.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

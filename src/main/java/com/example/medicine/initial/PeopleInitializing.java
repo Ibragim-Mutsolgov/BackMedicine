@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -26,13 +27,13 @@ public class PeopleInitializing implements CommandLineRunner {
                             "Ivanov",
                             "Ivan",
                             "Ivanovich",
-                            LocalDate.now(),
+                            new Date(),
                             1,
                             "Московская область, Химки",
                             2563L,
                             565656L,
                             "Отдел УФМС",
-                            LocalDate.now(),
+                            new Date(),
                             "202-111",
                             "Москва",
                             "Лефортово",

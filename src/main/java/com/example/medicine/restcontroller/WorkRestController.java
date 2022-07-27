@@ -8,6 +8,7 @@ import com.example.medicine.service.WorkService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,28 +23,42 @@ public class WorkRestController {
 
     private WorkRepository repository;
 
+    private JmsTemplate jmsTemplate;
+
     @GetMapping
     public ResponseEntity<List<Work>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+        List<Work> list = service.findAll();
+        jmsTemplate.convertAndSend("workFindAll", true);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Work> findById(@PathVariable Long id){
         return repository.findById(id)
-                .map(work -> ResponseEntity.ok().body(work))
+                .map(work -> {
+                    jmsTemplate.convertAndSend("workFindById", work);
+                    return ResponseEntity.ok().body(work);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Work> save(@RequestBody Work work){
-        return ResponseEntity.ok(service.save(work));
+        Work workSave = service.save(work);
+        jmsTemplate.convertAndSend("workSave", workSave);
+        return ResponseEntity.ok(workSave);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Work> resave(@PathVariable Long id, @RequestBody Work work){
         return repository.findById(id)
-                .map(work1 -> ResponseEntity.ok(service.save(work)))
+                .map(work1 -> {
+                    work1 = work;
+                    service.save(work1);
+                    jmsTemplate.convertAndSend("workPutSave", work1);
+                    return ResponseEntity.ok().body(work1);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -76,7 +91,9 @@ public class WorkRestController {
                         }
                         work1.setEmployee(employee);
                     }
-                    return ResponseEntity.ok().body(service.save(work1));
+                    service.save(work1);
+                    jmsTemplate.convertAndSend("workPatchListener", work1);
+                    return ResponseEntity.ok().body(work1);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -87,6 +104,7 @@ public class WorkRestController {
         return repository.findById(id)
                 .map(work -> {
                     service.delete(work.getWork_id());
+                    jmsTemplate.convertAndSend("workDelete", work);
                     return ResponseEntity.ok().body(work);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

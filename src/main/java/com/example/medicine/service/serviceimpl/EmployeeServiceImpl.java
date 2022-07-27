@@ -4,13 +4,11 @@ import com.example.medicine.domain.Employee;
 import com.example.medicine.repository.EmployeeRepository;
 import com.example.medicine.service.EmployeeService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional
 @AllArgsConstructor
@@ -25,22 +23,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(Long id) {
-        Employee employee = employeeRepository.findById(id).get();
-        log.info("IN EmployeeServiceImpl: EMPLOYEE " + employee + " FOUND");
-        return employee;
+        return employeeRepository.findById(id).get();
     }
 
     @Override
     public Employee save(Employee employee) {
-        employeeRepository.save(employee);
-        log.info("IN EmployeeServiceImpl: EMPLOYEE " + employee + " SAVED");
-        return employee;
+        return employeeRepository.save(employee);
     }
 
     @Override
     public void delete(Long id) {
-        Employee employee = employeeRepository.findById(id).get();
         employeeRepository.deleteById(id);
-        log.info("IN EmployeeServiceImpl: EMPLOYEE " + employee + " DELETED");
     }
 }

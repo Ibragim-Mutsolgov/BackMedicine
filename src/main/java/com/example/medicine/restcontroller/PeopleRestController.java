@@ -8,6 +8,7 @@ import com.example.medicine.service.PeopleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,28 +23,42 @@ public class PeopleRestController {
 
     private PeopleRepository repository;
 
+    private JmsTemplate jmsTemplate;
+
     @GetMapping
     public ResponseEntity<List<People>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+        List<People> list = service.findAll();
+        jmsTemplate.convertAndSend("peopleFindAll", true);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<People> findById(@PathVariable Long id){
         return repository.findById(id)
-                .map(people -> ResponseEntity.ok().body(people))
+                .map(people -> {
+                    jmsTemplate.convertAndSend("peopleFindById", people);
+                    return ResponseEntity.ok().body(people);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<People> save(@RequestBody People people){
-        return ResponseEntity.ok(service.save(people));
+        People peopleSave = service.save(people);
+        jmsTemplate.convertAndSend("peopleSave", peopleSave);
+        return ResponseEntity.ok(peopleSave);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<People> resave(@PathVariable Long id, @RequestBody People people){
         return repository.findById(id)
-                .map(people1 -> ResponseEntity.ok().body(service.save(people)))
+                .map(people1 -> {
+                    people1 = people;
+                    service.save(people1);
+                    jmsTemplate.convertAndSend("peoplePutSave", people1);
+                    return ResponseEntity.ok().body(people1);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -118,7 +133,9 @@ public class PeopleRestController {
                         }
                         people.setPatients(patients);
                     }
-                    return ResponseEntity.ok().body(service.save(people));
+                    service.save(people);
+                    jmsTemplate.convertAndSend("peoplePatchListener", people);
+                    return ResponseEntity.ok().body(people);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -129,6 +146,7 @@ public class PeopleRestController {
         return repository.findById(id)
                 .map(people -> {
                     service.delete(people.getId());
+                    jmsTemplate.convertAndSend("peopleDelete", people);
                     return ResponseEntity.ok().body(people);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

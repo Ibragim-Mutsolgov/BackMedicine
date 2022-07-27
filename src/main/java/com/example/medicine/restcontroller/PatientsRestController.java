@@ -6,6 +6,7 @@ import com.example.medicine.service.PatientsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,28 +21,42 @@ public class PatientsRestController {
 
     private PatientsRepository repository;
 
+    private JmsTemplate jmsTemplate;
+
     @GetMapping
     public ResponseEntity<List<Patients>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+        List<Patients> list = service.findAll();
+        jmsTemplate.convertAndSend("patientsFindAll", true);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Patients> findById(@PathVariable Long id){
         return repository.findById(id)
-                .map(patients -> ResponseEntity.ok().body(patients))
+                .map(patients -> {
+                    jmsTemplate.convertAndSend("patientsFindById", patients);
+                    return ResponseEntity.ok().body(patients);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Patients> save(@RequestBody Patients patients){
-        return ResponseEntity.ok(service.save(patients));
+        Patients patientsSave = service.save(patients);
+        jmsTemplate.convertAndSend("patientsSave", patientsSave);
+        return ResponseEntity.ok(patientsSave);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Patients> resave(@PathVariable Long id, @RequestBody Patients patients){
         return repository.findById(id)
-                .map(patients1 -> ResponseEntity.ok().body(service.save(patients)))
+                .map(patients1 -> {
+                    patients1 = patients;
+                    service.save(patients1);
+                    jmsTemplate.convertAndSend("patientsPutSave", patients1);
+                    return ResponseEntity.ok().body(patients1);
+                })
                 .orElseGet(()-> ResponseEntity.notFound().build());
     }
 
@@ -58,7 +73,9 @@ public class PatientsRestController {
                     if(patients.getPatients_type_policy() != null){
                         patients1.setPatients_type_policy(patients.getPatients_type_policy());
                     }
-                    return ResponseEntity.ok().body(service.save(patients1));
+                    service.save(patients1);
+                    jmsTemplate.convertAndSend("patientsPatchListener", patients1);
+                    return ResponseEntity.ok().body(patients1);
                 })
                 .orElseGet(()-> ResponseEntity.notFound().build());
     }
@@ -69,6 +86,7 @@ public class PatientsRestController {
         return repository.findById(id)
                 .map(patients -> {
                     service.delete(patients.getPatients_id());
+                    jmsTemplate.convertAndSend("patientsDelete", patients);
                     return ResponseEntity.ok().body(patients);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

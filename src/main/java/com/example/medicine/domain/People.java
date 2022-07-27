@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Entity
@@ -26,8 +27,8 @@ public class People {
 
     private String patronymic; // Отчество
 
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDate date; // Дата рождения
+    @Temporal(TemporalType.DATE)
+    private Date date; // Дата рождения
 
     private int gender; // Пол
 
@@ -40,8 +41,8 @@ public class People {
 
     private String passportIssue; // Паспорт выдан
 
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDate dateIssue; // Дата выдачи
+    @Temporal(TemporalType.DATE)
+    private Date dateIssue; // Дата выдачи
 
     private String departmentCode; // Код подразделения
 
@@ -63,7 +64,7 @@ public class People {
     @JoinColumn(name = "employee_employee_id", referencedColumnName = "employee_id")
     private Employee employee;
 
-    public People(String surname, String name, String patronymic, LocalDate date, int gender, String placeBirth, Long passportSeries, Long passportNumber, String passportIssue, LocalDate dateIssue, String departmentCode, String region, String station, String locality, String street, Patients patients, Employee employee) {
+    public People(String surname, String name, String patronymic, Date date, int gender, String placeBirth, Long passportSeries, Long passportNumber, String passportIssue, Date dateIssue, String departmentCode, String region, String station, String locality, String street, Patients patients, Employee employee) {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;

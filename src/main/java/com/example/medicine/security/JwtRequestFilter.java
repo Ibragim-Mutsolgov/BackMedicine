@@ -2,7 +2,7 @@ package com.example.medicine.security;
 
 import com.example.medicine.service.serviceimpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Slf4j
 @Component
 @AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -24,6 +23,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserServiceImpl userService;
 
     private final JwtUtil jwtUtil;
+
+    private JmsTemplate jmsTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +36,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try{
                 username = jwtUtil.getUsernameFromToken(jwt);
             }catch(Exception e){
-                log.info("TOKEN IS INVALID: " + e.getMessage());
+                jmsTemplate.convertAndSend("tokenIsInvalid", e.getMessage());
             }
         }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){

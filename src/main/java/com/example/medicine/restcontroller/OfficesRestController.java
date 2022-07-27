@@ -6,6 +6,7 @@ import com.example.medicine.service.OfficesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,29 +21,43 @@ public class OfficesRestController {
 
     private OfficesRepository repository;
 
+    private JmsTemplate jmsTemplate;
+
     @GetMapping
     public ResponseEntity<List<Offices>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+        List<Offices> list = service.findAll();
+        jmsTemplate.convertAndSend("officesFindAll", true);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Offices> findById(@PathVariable Long id){
         return repository.findById(id)
-                .map(offices -> ResponseEntity.ok().body(offices))
+                .map(offices -> {
+                    jmsTemplate.convertAndSend("officesFindById", offices);
+                    return ResponseEntity.ok().body(offices);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Offices> save(@RequestBody Offices offices){
-        return ResponseEntity.ok(service.save(offices));
+        Offices officesSave = service.save(offices);
+        jmsTemplate.convertAndSend("officesSave", officesSave);
+        return ResponseEntity.ok(officesSave);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Offices> resave(@PathVariable Long id,
                                           @RequestBody Offices offices){
         return repository.findById(id)
-                .map(offices1 -> ResponseEntity.ok(service.save(offices)))
+                .map(offices1 -> {
+                    offices1 = offices;
+                    service.save(offices1);
+                    jmsTemplate.convertAndSend("officesPutSave", offices1);
+                    return ResponseEntity.ok().body(offices1);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -51,10 +66,10 @@ public class OfficesRestController {
                                           @RequestBody Offices offices){
         return repository.findById(id)
                 .map(offices1 -> {
-                    if(offices.getNumber_offices() != null){
-                        offices1.setNumber_offices(offices.getNumber_offices());
-                    }
-                    return ResponseEntity.ok().body(service.save(offices1));
+                    offices1.setNumber_offices(offices.getNumber_offices());
+                    service.save(offices1);
+                    jmsTemplate.convertAndSend("officesPatchListener", offices1);
+                    return ResponseEntity.ok().body(offices1);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -66,6 +81,7 @@ public class OfficesRestController {
         return repository.findById(id)
                 .map(offices -> {
                     service.delete(offices.getOffices_id());
+                    jmsTemplate.convertAndSend("officesDelete", offices);
                     return ResponseEntity.ok().body(offices);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

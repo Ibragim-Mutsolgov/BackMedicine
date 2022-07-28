@@ -2,25 +2,17 @@ package com.example.medicine.service.serviceimpl;
 
 import com.example.medicine.domain.People;
 import com.example.medicine.repository.PeopleRepository;
-import com.example.medicine.service.PeopleService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
 @DataJpaTest
@@ -51,8 +43,9 @@ public class PeopleServiceImplTest {
     @Test
     void findById() {
         // given
+        Long id = 1L;
         People people = new People(
-                1L,
+                id,
                 "Ivanov",
                 "Ivan",
                 "Ivanovich",
@@ -74,17 +67,18 @@ public class PeopleServiceImplTest {
         service.save(people);
 
         // when
-        service.findById(1L);
+        service.findById(id);
 
         // then
-        verify(repository).findById(1L);
+        verify(repository).findById(id);
     }
 
     @Test
     void save() {
         // given
+        Long id = 2L;
         People people = new People(
-                2L,
+                id,
                 "Ivanov",
                 "Ivan",
                 "Ivanovich",
@@ -119,8 +113,9 @@ public class PeopleServiceImplTest {
     @Test
     void delete() {
         //given
+        Long id = 3L;
         People people = new People(
-                3L,
+                id,
                 "Ivanov",
                 "Ivan",
                 "Ivanovich",
@@ -142,9 +137,9 @@ public class PeopleServiceImplTest {
         service.save(people);
 
         // when
-        service.delete(3L);
+        service.delete(id);
 
         // then
-        verify(repository).deleteById(3L);
+        verify(repository).deleteById(id);
     }
 }

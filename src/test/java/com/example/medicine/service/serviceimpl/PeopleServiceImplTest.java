@@ -6,8 +6,11 @@ import com.example.medicine.service.PeopleService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -15,45 +18,41 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
 
 @DataJpaTest
+@ExtendWith(MockitoExtension.class)
 public class PeopleServiceImplTest {
 
     @Mock
     private PeopleRepository repository;
 
-    private AutoCloseable autoCloseable;
-
     private PeopleServiceImpl service;
 
     @BeforeEach
     public void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
         service = new PeopleServiceImpl(repository);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
     }
 
     @Test
     void findAll() {
         // given
-        List<People> list = service.findAll();
 
         // when
+        service.findAll();
 
         // then
-        assertNotNull(list);
+        verify(repository).findAll();
     }
 
     @Test
     void findById() {
         // given
         People people = new People(
+                1L,
                 "Ivanov",
                 "Ivan",
                 "Ivanovich",
@@ -72,23 +71,56 @@ public class PeopleServiceImplTest {
                 null,
                 null
         );
-        people = service.save(people);
+        service.save(people);
 
         // when
-        People peopleSave = service.findById(people.getId());
+        service.findById(1L);
 
         // then
-        assertEquals(people, peopleSave);
+        verify(repository).findById(1L);
     }
 
     @Test
     void save() {
+        // given
+        People people = new People(
+                2L,
+                "Ivanov",
+                "Ivan",
+                "Ivanovich",
+                new Date(),
+                1,
+                "Московская область, Химки",
+                2563L,
+                565656L,
+                "Отдел УФМС",
+                new Date(),
+                "202-111",
+                "Москва",
+                "Лефортово",
+                "Авиамоторная",
+                "Авиамоторная 8а",
+                null,
+                null
+        );
+        service.save(people);
+
+        // when
+        ArgumentCaptor<People> argumentCaptor = ArgumentCaptor.forClass(People.class);
+
+        verify(repository).save(argumentCaptor.capture());
+
+        People peopleSave = argumentCaptor.getValue();
+
+        // then
+        assertThat(peopleSave).isEqualTo(people);
     }
 
     @Test
     void delete() {
         //given
         People people = new People(
+                3L,
                 "Ivanov",
                 "Ivan",
                 "Ivanovich",
@@ -107,13 +139,12 @@ public class PeopleServiceImplTest {
                 null,
                 null
         );
-        people = service.save(people);
-        service.delete(people.getId());
+        service.save(people);
 
-        //when
-        People peopleSave = service.findById(people.getId());
+        // when
+        service.delete(3L);
 
-        //then
-        assertEquals(null, peopleSave);
+        // then
+        verify(repository).deleteById(3L);
     }
 }

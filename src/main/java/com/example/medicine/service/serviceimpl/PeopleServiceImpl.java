@@ -23,7 +23,7 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Override
     public People findById(Long id) {
-        return peopleRepository.findById(id).get();
+        return peopleRepository.findById(id).orElse(null);
     }
 
     @Override

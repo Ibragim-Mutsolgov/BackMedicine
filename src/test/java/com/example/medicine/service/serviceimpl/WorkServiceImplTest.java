@@ -1,7 +1,7 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.People;
-import com.example.medicine.repository.PeopleRepository;
+import com.example.medicine.domain.Work;
+import com.example.medicine.repository.WorkRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,41 +13,30 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.Date;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
-public class PeopleServiceImplTest {
+class WorkServiceImplTest {
 
     @Mock
-    private PeopleRepository repository;
+    private WorkRepository repository;
 
-    private PeopleServiceImpl service;
+    private WorkServiceImpl service;
 
-    private People people;
+    private Work work;
 
-    private final Long id = 1L;
+    private Long id = 1L;
 
     @BeforeEach
-    public void setUp() {
-        service = new PeopleServiceImpl(repository);
-        people = new People(
+    void setUp() {
+        service = new WorkServiceImpl(repository);
+        work = new Work(
                 id,
-                "Ivanov",
-                "Ivan",
-                "Ivanovich",
                 new Date(),
-                1,
-                "Московская область, Химки",
-                2563L,
-                565656L,
-                "Отдел УФМС",
                 new Date(),
-                "202-111",
-                "Москва",
-                "Лефортово",
-                "Авиамоторная",
-                "Авиамоторная 8а",
+                new Date(),
                 null,
                 null
         );
@@ -67,7 +56,7 @@ public class PeopleServiceImplTest {
     @Test
     void findById() {
         // given
-        service.save(people);
+        service.save(work);
 
         // when
         service.findById(id);
@@ -79,21 +68,21 @@ public class PeopleServiceImplTest {
     @Test
     void save() {
         // given
-        service.save(people);
-        ArgumentCaptor<People> argumentCaptor = ArgumentCaptor.forClass(People.class);
+        service.save(work);
+        ArgumentCaptor<Work> argumentCaptor = ArgumentCaptor.forClass(Work.class);
 
         // when
         verify(repository).save(argumentCaptor.capture());
-        People peopleSave = argumentCaptor.getValue();
+        Work workSave = argumentCaptor.getValue();
 
         // then
-        assertThat(peopleSave).isEqualTo(people);
+        assertThat(work).isEqualTo(workSave);
     }
 
     @Test
     void delete() {
-        //given
-        service.save(people);
+        // given
+        service.save(work);
 
         // when
         service.delete(id);

@@ -23,7 +23,7 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public Work findById(Long id) {
-        return workRepository.findById(id).get();
+        return workRepository.findById(id).orElse(null);
     }
 
     @Override

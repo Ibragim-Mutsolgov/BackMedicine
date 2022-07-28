@@ -1,7 +1,7 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.Patients;
-import com.example.medicine.repository.PatientsRepository;
+import com.example.medicine.domain.Employee;
+import com.example.medicine.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,30 +10,28 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
-class PatientsServiceImplTest {
+class EmployeeServiceImplTest {
 
     @Mock
-    private PatientsRepository repository;
+    private EmployeeRepository repository;
 
-    private PatientsServiceImpl service;
+    private EmployeeServiceImpl service;
 
-    private Patients patients;
+    private Employee employee;
 
     private final Long id = 1L;
 
     @BeforeEach
     void setUp() {
-        service = new PatientsServiceImpl(repository);
-        patients = new Patients(
+        service = new EmployeeServiceImpl(repository);
+        employee = new Employee(
                 id,
-                "54435",
-                "455354",
-                "45455"
+                "Ivanov Ivan Ivanovich"
         );
     }
 
@@ -51,7 +49,7 @@ class PatientsServiceImplTest {
     @Test
     void findById() {
         // given
-        service.save(patients);
+        service.save(employee);
 
         // when
         service.findById(id);
@@ -63,21 +61,21 @@ class PatientsServiceImplTest {
     @Test
     void save() {
         // given
-        service.save(patients);
-        ArgumentCaptor<Patients> argumentCaptor = ArgumentCaptor.forClass(Patients.class);
+        service.save(employee);
+        ArgumentCaptor<Employee> argumentCaptor = ArgumentCaptor.forClass(Employee.class);
 
         // when
         verify(repository).save(argumentCaptor.capture());
-        Patients patientsSave = argumentCaptor.getValue();
+        Employee employeeSave = argumentCaptor.getValue();
 
         // then
-        assertThat(patients).isEqualTo(patientsSave);
+        assertEquals(employee, employeeSave);
     }
 
     @Test
     void delete() {
         // given
-        service.save(patients);
+        service.save(employee);
 
         // when
         service.delete(id);

@@ -47,7 +47,7 @@ public class PeopleRestController {
     public ResponseEntity<People> save(@RequestBody People people){
         People peopleSave = service.save(people);
         jmsTemplate.convertAndSend("peopleSave", peopleSave);
-        return ResponseEntity.ok(peopleSave);
+        return ResponseEntity.ok().body(peopleSave);
     }
 
     @PutMapping("/{id}")

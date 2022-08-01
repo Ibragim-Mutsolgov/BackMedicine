@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,13 +54,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = usersRepository.findByUsername(username);
         if(user == null){
             jmsTemplate.convertAndSend("userNotFound", username);
+            return null;
         } else{
-            return new User(user.getUsername(), user.getPassword(), user.getRole());
+            return user;
         }
-        throw new UsernameNotFoundException("IN UsersServiceImpl: USER " + username + " NOT FOUND IN DATABASE");
     }
 }

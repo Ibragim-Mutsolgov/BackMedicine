@@ -4,20 +4,18 @@ import com.example.medicine.domain.Employee;
 import com.example.medicine.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
 
-    @Mock
+    @Autowired
     private EmployeeRepository repository;
 
     private EmployeeServiceImpl service;
@@ -38,49 +36,51 @@ class EmployeeServiceImplTest {
     @Test
     void findAll() {
         // given
+        List<Employee> list;
 
         // when
-        service.findAll();
+        list = service.findAll();
 
         // then
-        verify(repository).findAll();
+        assertEquals(list.size(), 0);
     }
 
     @Test
     void findById() {
         // given
-        service.save(employee);
+        Employee employeeSave;
 
         // when
-        service.findById(id);
+        employeeSave = repository.save(employee);
+        employee = service.findById(employeeSave.getEmployee_id());
 
         // then
-        verify(repository).findById(id);
+        assertEquals(employeeSave, employee);
     }
 
     @Test
     void save() {
         // given
-        service.save(employee);
-        ArgumentCaptor<Employee> argumentCaptor = ArgumentCaptor.forClass(Employee.class);
+        Employee employeeSave;
 
         // when
-        verify(repository).save(argumentCaptor.capture());
-        Employee employeeSave = argumentCaptor.getValue();
+        employeeSave = service.save(employee);
+        employee = repository.getById(employeeSave.getEmployee_id());
 
         // then
-        assertEquals(employee, employeeSave);
+        assertEquals(employeeSave, employee);
     }
 
     @Test
     void delete() {
         // given
-        service.save(employee);
+        Employee employeeSave;
 
         // when
-        service.delete(id);
+        employeeSave = repository.save(employee);
+        service.delete(employeeSave.getEmployee_id());
 
         // then
-        verify(repository).deleteById(id);
+        assertEquals(repository.findById(employeeSave.getEmployee_id()), Optional.empty());
     }
 }

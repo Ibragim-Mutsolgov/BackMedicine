@@ -4,29 +4,26 @@ import com.example.medicine.domain.People;
 import com.example.medicine.repository.PeopleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
 
 @DataJpaTest
-@ExtendWith(MockitoExtension.class)
 public class PeopleServiceImplTest {
 
-    @Mock
+    @Autowired
     private PeopleRepository repository;
 
     private PeopleServiceImpl service;
 
     private People people;
 
-    private final Long id = 1L;
+    private final Long id = 10L;
 
     @BeforeEach
     public void setUp() {
@@ -56,49 +53,50 @@ public class PeopleServiceImplTest {
     @Test
     void findAll() {
         // given
+        List<People> list;
 
         // when
-        service.findAll();
+        list = service.findAll();
 
         // then
-        verify(repository).findAll();
+        assertEquals(list.size(), 0);
     }
 
     @Test
     void findById() {
         // given
-        service.save(people);
+        People peopleSave;
 
         // when
-        service.findById(id);
+        peopleSave = repository.save(people);
+        people = service.findById(peopleSave.getId());
 
         // then
-        verify(repository).findById(id);
+        assertEquals(peopleSave, people);
     }
 
     @Test
     void save() {
         // given
-        service.save(people);
-        ArgumentCaptor<People> argumentCaptor = ArgumentCaptor.forClass(People.class);
+        People peopleSave;
 
         // when
-        verify(repository).save(argumentCaptor.capture());
-        People peopleSave = argumentCaptor.getValue();
+        peopleSave = service.save(people);
+        people = repository.getById(peopleSave.getId());
 
         // then
-        assertThat(peopleSave).isEqualTo(people);
+        assertEquals(peopleSave, people);
     }
 
     @Test
     void delete() {
         //given
-        service.save(people);
-
+        People peopleSave;
         // when
-        service.delete(id);
+        peopleSave = repository.save(people);
+        service.delete(peopleSave.getId());
 
         // then
-        verify(repository).deleteById(id);
+        assertEquals(repository.findById(id), Optional.empty());
     }
 }

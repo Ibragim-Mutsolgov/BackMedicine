@@ -4,28 +4,25 @@ import com.example.medicine.domain.Offices;
 import com.example.medicine.repository.OfficesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@ExtendWith(MockitoExtension.class)
 class OfficesServiceImplTest {
 
-    @Mock
+    @Autowired
     private OfficesRepository repository;
 
     private OfficesServiceImpl service;
 
     private Offices offices;
 
-    private Long id = 1L;
+    private final Long id = 1L;
 
     @BeforeEach
     void setUp() {
@@ -39,49 +36,51 @@ class OfficesServiceImplTest {
     @Test
     void findAll() {
         // given
+        List<Offices> list;
 
         // when
-        service.findAll();
+        list = service.findAll();
 
         // then
-        verify(repository).findAll();
+        assertEquals(list.size(), 0);
     }
 
     @Test
     void findById() {
         // given
-        service.save(offices);
+        Offices officesSave;
 
         // when
-        service.findById(id);
+        officesSave = repository.save(offices);
+        offices = service.findById(officesSave.getOffices_id());
 
         // then
-        verify(repository).findById(id);
+        assertEquals(officesSave, offices);
     }
 
     @Test
     void save() {
         // given
-        service.save(offices);
-        ArgumentCaptor<Offices> argumentCaptor = ArgumentCaptor.forClass(Offices.class);
+        Offices officesSave;
 
         // when
-        verify(repository).save(argumentCaptor.capture());
-        Offices officesSave = argumentCaptor.getValue();
+        officesSave = service.save(offices);
+        offices = repository.getById(officesSave.getOffices_id());
 
         // then
-        assertThat(offices).isEqualTo(officesSave);
+        assertEquals(officesSave, offices);
     }
 
     @Test
     void delete() {
         // given
-        service.save(offices);
+        Offices officesSave;
 
         // when
-        service.delete(id);
+        officesSave = repository.save(offices);
+        service.delete(officesSave.getOffices_id());
 
         // then
-        verify(repository).deleteById(id);
+        assertEquals(repository.findById(officesSave.getOffices_id()), Optional.empty());
     }
 }

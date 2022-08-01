@@ -23,7 +23,7 @@ public class OfficesServiceImpl implements OfficesService {
 
     @Override
     public Offices findById(Long id) {
-        return officesRepository.findById(id).orElse(null);
+        return officesRepository.findById(id).get();
     }
 
     @Override

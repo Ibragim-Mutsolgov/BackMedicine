@@ -4,20 +4,18 @@ import com.example.medicine.domain.Patients;
 import com.example.medicine.repository.PatientsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 
 @DataJpaTest
-@ExtendWith(MockitoExtension.class)
 class PatientsServiceImplTest {
 
-    @Mock
+    @Autowired
     private PatientsRepository repository;
 
     private PatientsServiceImpl service;
@@ -40,49 +38,51 @@ class PatientsServiceImplTest {
     @Test
     void findAll() {
         // given
+        List<Patients> list;
 
         // when
-        service.findAll();
+        list = service.findAll();
 
         // then
-        verify(repository).findAll();
+        assertEquals(list.size(), 0);
     }
 
     @Test
     void findById() {
         // given
-        service.save(patients);
+        Patients patientsSave;
 
         // when
-        service.findById(id);
+        patientsSave = repository.save(patients);
+        patients = service.findById(patientsSave.getPatients_id());
 
         // then
-        verify(repository).findById(id);
+        assertEquals(patientsSave, patients);
     }
 
     @Test
     void save() {
         // given
-        service.save(patients);
-        ArgumentCaptor<Patients> argumentCaptor = ArgumentCaptor.forClass(Patients.class);
+        Patients patientsSave;
 
         // when
-        verify(repository).save(argumentCaptor.capture());
-        Patients patientsSave = argumentCaptor.getValue();
+        patientsSave = service.save(patients);
+        patients = repository.getById(patientsSave.getPatients_id());
 
         // then
-        assertThat(patients).isEqualTo(patientsSave);
+        assertEquals(patientsSave, patients);
     }
 
     @Test
     void delete() {
         // given
-        service.save(patients);
+        Patients patientsSave;
 
         // when
+        patientsSave = repository.save(patients);
         service.delete(id);
 
         // then
-        verify(repository).deleteById(id);
+        assertEquals(repository.findById(patientsSave.getPatients_id()), Optional.empty());
     }
 }

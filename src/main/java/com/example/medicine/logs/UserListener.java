@@ -31,11 +31,11 @@ public class UserListener {
 
     @JmsListener(destination = "userNotFound", containerFactory = "jmsListenerContainerFactory")
     public void notFound(String user) {
-        log.info("IN UsersServiceImpl: USER " + user + " NOT FOUND IN DATABASE");
+        log.info("IN UserListener: USER " + user + " NOT FOUND IN DATABASE");
     }
 
     @JmsListener(destination = "tokenIsInvalid", containerFactory = "jmsListenerContainerFactory")
     public void isInvalid(String message) {
-        log.info("IN UsersServiceImpl: TOKEN IS INVALID: " + message);
+        log.info("IN UserListener: TOKEN IS INVALID: " + message);
     }
 }

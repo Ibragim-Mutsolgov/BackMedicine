@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class PeopleRestControllerTest {
 
-    @MockBean
     private PeopleService service;
 
     private PeopleRestController controller;

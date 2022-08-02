@@ -25,14 +25,14 @@ public class AuthRestController {
 
     @PostMapping
     public ResponseEntity<?> createToken(@RequestBody User user) throws Exception {
-        try{
+        try {
             authenticate(user.getUsername(), user.getPassword());
-        }catch(BadCredentialsException ex){
+            UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+            String token = jwtUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new JwtResponse(token));
+        } catch(Exception ex){
             throw new Exception("INCORRECT USERNAME OR PASSWORD", ex);
         }
-        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
-        String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
     }
 
     private void authenticate(String username, String password){

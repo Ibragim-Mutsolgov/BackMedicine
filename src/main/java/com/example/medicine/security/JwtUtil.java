@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,6 +55,12 @@ public class JwtUtil {
 
     private String doGenerateToken(Map<String, Object> claims, String subject){
         Date issuedDate = new Date();
+        if(time == null){
+            time = 3000L;
+        }
+        if(secret == null){
+            secret = "abcd";
+        }
         Date expiredDate = new Date(issuedDate.getTime() + 60 * 60 * time);
         return Jwts.builder()
                 .setClaims(claims)

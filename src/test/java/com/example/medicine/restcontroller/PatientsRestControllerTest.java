@@ -79,7 +79,7 @@ class PatientsRestControllerTest {
     void save() {
         // given
         ResponseEntity<Patients> response;
-        patients.setPatients_id(4L);
+        patients.setPatients_id(13L);
 
         // when
         response = controller.save(patients);

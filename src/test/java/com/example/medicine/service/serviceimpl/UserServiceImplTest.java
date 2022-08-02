@@ -90,11 +90,12 @@ class UserServiceImplTest {
     @Test
     void delete() {
         // given
+        User userSave;
 
         // when
-        repository.save(user);
-        service.delete(id);
-        verify(jmsTemplate).convertAndSend("userDelete", user);
+        userSave = repository.save(user);
+        service.delete(userSave.getId());
+        verify(jmsTemplate).convertAndSend("userDelete", userSave);
 
         // then
         assertThat(repository.findById(id)).isEqualTo(Optional.empty());

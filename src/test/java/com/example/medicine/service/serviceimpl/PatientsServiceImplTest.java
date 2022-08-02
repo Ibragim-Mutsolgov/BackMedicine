@@ -80,7 +80,7 @@ class PatientsServiceImplTest {
 
         // when
         patientsSave = repository.save(patients);
-        service.delete(id);
+        service.delete(patientsSave.getPatients_id());
 
         // then
         assertEquals(repository.findById(patientsSave.getPatients_id()), Optional.empty());

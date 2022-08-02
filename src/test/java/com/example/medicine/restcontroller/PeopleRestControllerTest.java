@@ -100,7 +100,7 @@ class PeopleRestControllerTest {
     void save() { // post
         // given
         ResponseEntity<People> response;
-        people.setId(8L);
+        people.setId(22L);
 
         // when
         response = controller.save(people);

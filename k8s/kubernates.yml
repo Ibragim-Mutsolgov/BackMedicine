@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medicine-deploy
+  labels:
+    app: medicine
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: medicine
+  template:
+    metadata:
+      labels:
+        app: medicine
+    spec:
+      containers:
+        - name: medicine-container
+          image: medicine/medicine:latest

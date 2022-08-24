@@ -1,11 +1,12 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.Employee;
+import com.example.medicine.model.Employee;
 import com.example.medicine.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,39 +37,71 @@ class EmployeeServiceImplTest {
     @Test
     void findAll() {
         // given
-        List<Employee> list;
+        ResponseEntity<List<Employee>> list;
 
         // when
         list = service.findAll();
 
         // then
-        assertEquals(list.size(), 0);
+        assertEquals(list.getBody().size(), 0);
     }
 
     @Test
     void findById() {
         // given
+        ResponseEntity<Employee> resultEmployee;
         Employee employeeSave;
 
         // when
         employeeSave = repository.save(employee);
-        employee = service.findById(employeeSave.getEmployee_id());
+        resultEmployee = service.findById(employeeSave.getEmployee_id());
 
         // then
-        assertEquals(employeeSave, employee);
+        assertEquals(resultEmployee.getBody(), employeeSave);
     }
 
     @Test
     void save() {
         // given
+        ResponseEntity<Employee> resultEmployee;
         Employee employeeSave;
 
         // when
-        employeeSave = service.save(employee);
-        employee = repository.getById(employeeSave.getEmployee_id());
+        resultEmployee = service.save(employee);
+        employeeSave = repository.getById(resultEmployee.getBody().getEmployee_id());
 
         // then
-        assertEquals(employeeSave, employee);
+        assertEquals(resultEmployee.getBody(), employeeSave);
+    }
+
+    @Test
+    public void putSave() {
+        // given
+        ResponseEntity<Employee> response;
+        Employee employeeSave;
+
+        // when
+        employeeSave = repository.save(employee);
+        employee.setEmployee_name("adad");
+        response = service.putSave(employeeSave.getEmployee_id(), employee);
+
+        // then
+        assertEquals(response.getBody().getEmployee_name(), "adad");
+    }
+
+    @Test
+    public void patchSave() {
+        // given
+        ResponseEntity<Employee> response;
+        Employee employeeSave;
+
+        // when
+        employeeSave = repository.save(employee);
+        employee.setEmployee_name("adadd");
+        response = service.patchSave(employeeSave.getEmployee_id(), employee);
+
+        // then
+        assertEquals(response.getBody().getEmployee_name(), "adadd");
     }
 
     @Test

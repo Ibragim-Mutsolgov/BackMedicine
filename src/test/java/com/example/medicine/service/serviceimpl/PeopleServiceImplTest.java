@@ -1,17 +1,21 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.People;
+import com.example.medicine.model.Employee;
+import com.example.medicine.model.Patients;
+import com.example.medicine.model.People;
 import com.example.medicine.repository.PeopleRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 public class PeopleServiceImplTest {
@@ -28,6 +32,16 @@ public class PeopleServiceImplTest {
     @BeforeEach
     public void setUp() {
         service = new PeopleServiceImpl(repository);
+        Patients patients = new Patients(
+                11L,
+                "",
+                "",
+                ""
+        );
+        Employee employee = new Employee(
+                12L,
+                ""
+        );
         people = new People(
                 id,
                 "Ivanov",
@@ -45,47 +59,79 @@ public class PeopleServiceImplTest {
                 "Лефортово",
                 "Авиамоторная",
                 "Авиамоторная 8а",
-                null,
-                null
+                patients,
+                employee
         );
     }
 
     @Test
     void findAll() {
         // given
-        List<People> list;
+        ResponseEntity<List<People>> list;
 
         // when
         list = service.findAll();
 
         // then
-        assertEquals(list.size(), 0);
+        assertEquals(list.getBody().size(), 0);
     }
 
     @Test
     void findById() {
         // given
+        ResponseEntity<People> resultPeople;
         People peopleSave;
 
         // when
         peopleSave = repository.save(people);
-        people = service.findById(peopleSave.getId());
+        resultPeople = service.findById(peopleSave.getId());
 
         // then
-        assertEquals(peopleSave, people);
+        assertEquals(resultPeople.getBody(), peopleSave);
     }
 
     @Test
     void save() {
         // given
+        ResponseEntity<People> response;
         People peopleSave;
 
         // when
-        peopleSave = service.save(people);
-        people = repository.getById(peopleSave.getId());
+        response = service.save(people);
+        peopleSave = repository.getById(response.getBody().getId());
 
         // then
-        assertEquals(peopleSave, people);
+        assertEquals(peopleSave, response.getBody());
+    }
+
+    @Test
+    public void putSave() {
+        // given
+        ResponseEntity<People> response;
+        People peopleSave;
+
+        // when
+        peopleSave = repository.save(people);
+        people.setName("adad");
+        response = service.putSave(peopleSave.getId(), people);
+
+        // then
+        assertEquals(response.getBody().getName(), "adad");
+    }
+
+    @Test
+    public void patchSave() {
+        // given
+        ResponseEntity<People> response;
+        People peopleSave;
+
+        // when
+        peopleSave = repository.save(people);
+        people.setName("adadd");
+        response = service.patchSave(peopleSave.getId(), people);
+
+        // then
+        assertEquals(response.getBody().getName(), "adadd");
     }
 
     @Test

@@ -1,26 +1,24 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.Employee;
-import com.example.medicine.domain.Offices;
-import com.example.medicine.domain.Work;
+import com.example.medicine.model.Employee;
+import com.example.medicine.model.Offices;
+import com.example.medicine.model.Work;
 import com.example.medicine.repository.WorkRepository;
 import com.example.medicine.service.WorkService;
 import com.example.medicine.service.serviceimpl.WorkServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -32,9 +30,6 @@ class WorkRestControllerTest {
 
     @Autowired
     private WorkRepository repository;
-
-    @Mock
-    private JmsTemplate jmsTemplate;
 
     private Work work;
 
@@ -51,7 +46,7 @@ class WorkRestControllerTest {
                 null
         );
         service = new WorkServiceImpl(repository);
-        controller = new WorkRestController(service, repository, jmsTemplate);
+        controller = new WorkRestController(service);
     }
 
     @Test
@@ -100,8 +95,7 @@ class WorkRestControllerTest {
 
         // when
         workSave = repository.save(work);
-        work.setWork_id(35L);
-        response = controller.resave(workSave.getWork_id(), work);
+        response = controller.putSave(workSave.getWork_id(), work);
 
         // then
         assertEquals(response.getBody(), work);
@@ -128,7 +122,7 @@ class WorkRestControllerTest {
         employee = workSave.getEmployee();
         employee.setEmployee_name("305");
         work.setEmployee(employee);
-        response = controller.reSave(workSave.getWork_id(), work);
+        response = controller.patchSave(workSave.getWork_id(), work);
 
         // then
         assertEquals(response.getBody(), workSave);

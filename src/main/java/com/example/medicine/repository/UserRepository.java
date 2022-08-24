@@ -1,6 +1,6 @@
 package com.example.medicine.repository;
 
-import com.example.medicine.domain.User;
+import com.example.medicine.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

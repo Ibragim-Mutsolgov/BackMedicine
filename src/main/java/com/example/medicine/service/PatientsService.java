@@ -1,16 +1,21 @@
 package com.example.medicine.service;
 
-import com.example.medicine.domain.Patients;
+import com.example.medicine.model.Patients;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PatientsService {
 
-    List<Patients> findAll();
+    ResponseEntity<List<Patients>> findAll();
 
-    Patients findById(Long id);
+    ResponseEntity<Patients> findById(Long id);
 
-    Patients save(Patients patients);
+    ResponseEntity<Patients> save(Patients patients);
 
-    void delete(Long id);
+    ResponseEntity<Patients> putSave(Long id, Patients patients);
+
+    ResponseEntity<Patients> patchSave(Long id, Patients patients);
+
+    ResponseEntity<Patients> delete(Long id);
 }

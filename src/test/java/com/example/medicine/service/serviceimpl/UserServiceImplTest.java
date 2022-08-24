@@ -1,16 +1,15 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.Role;
-import com.example.medicine.domain.User;
+import com.example.medicine.model.Role;
+import com.example.medicine.model.User;
 import com.example.medicine.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -29,16 +27,13 @@ class UserServiceImplTest {
 
     private UserServiceImpl service;
 
-    @Mock
-    private JmsTemplate jmsTemplate;
-
     private User user;
 
     private final Long id = 1L;
 
     @BeforeEach
     void setUp() {
-        service = new UserServiceImpl(repository, jmsTemplate);
+        service = new UserServiceImpl(repository);
         user = new User(
                 id,
                 "user",
@@ -50,41 +45,40 @@ class UserServiceImplTest {
     @Test
     void findAll() {
         // given
-        List<User> list;
+        ResponseEntity<List<User>> list;
 
         // when
         list = service.findAll();
-        verify(jmsTemplate).convertAndSend("userFindAll", true);
 
         // then
-        assertEquals(list.size(), 0);
+        assertEquals(list.getBody().size(), 0);
     }
 
     @Test
     void findById() {
         // given
+        ResponseEntity<User> resultUser;
         User userSave;
 
         // when
         userSave = repository.save(user);
-        user = service.findById(userSave.getId());
-        verify(jmsTemplate).convertAndSend("userFindById", user);
+        resultUser = service.findById(userSave.getId());
 
         // then
-        assertEquals(user, userSave);
+        assertEquals(resultUser.getBody(), userSave);
     }
 
     @Test
     void save() {
         // given
-        User userSave;
+        ResponseEntity<User> resultUser;
+        user.setId(34L);
 
         // when
-        userSave = service.save(user);
-        verify(jmsTemplate).convertAndSend("userSave", userSave);
+        resultUser = service.save(user);
 
         // then
-        assertEquals(userSave, user);
+        assertEquals(resultUser.getBody(), user);
     }
 
     @Test
@@ -95,7 +89,6 @@ class UserServiceImplTest {
         // when
         userSave = repository.save(user);
         service.delete(userSave.getId());
-        verify(jmsTemplate).convertAndSend("userDelete", userSave);
 
         // then
         assertThat(repository.findById(id)).isEqualTo(Optional.empty());
@@ -122,7 +115,6 @@ class UserServiceImplTest {
 
         // when
         userDetails = service.loadUserByUsername("u");
-        verify(jmsTemplate).convertAndSend("userNotFound", "u");
 
         // then
         assertThat(userDetails).isEqualTo(null);

@@ -1,4 +1,4 @@
-package com.example.medicine.domain;
+package com.example.medicine.model;
 
 public enum Role {
     ADMIN, USER

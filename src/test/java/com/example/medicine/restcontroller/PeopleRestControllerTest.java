@@ -1,28 +1,24 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.Employee;
-import com.example.medicine.domain.Patients;
-import com.example.medicine.domain.People;
+import com.example.medicine.model.Employee;
+import com.example.medicine.model.Patients;
+import com.example.medicine.model.People;
 import com.example.medicine.repository.PeopleRepository;
 import com.example.medicine.service.PeopleService;
 import com.example.medicine.service.serviceimpl.PeopleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -34,9 +30,6 @@ class PeopleRestControllerTest {
 
     @Autowired
     private PeopleRepository repository;
-
-    @Mock
-    private JmsTemplate jmsTemplate;
 
     private People people;
 
@@ -65,7 +58,7 @@ class PeopleRestControllerTest {
                 null
         );
         service = new PeopleServiceImpl(repository);
-        controller = new PeopleRestController(service, repository, jmsTemplate);
+        controller = new PeopleRestController(service);
     }
 
     @Test
@@ -75,7 +68,6 @@ class PeopleRestControllerTest {
 
         // when
         response = controller.findAll();
-        verify(jmsTemplate).convertAndSend("peopleFindAll", true);
 
         // then
         assertEquals(response.getBody(), new ArrayList<>());
@@ -90,7 +82,6 @@ class PeopleRestControllerTest {
         // when
         peopleSave = repository.save(people);
         response = controller.findById(peopleSave.getId());
-        verify(jmsTemplate).convertAndSend("peopleFindById", peopleSave);
 
         // then
         assertEquals(response.getBody(), peopleSave);
@@ -110,14 +101,14 @@ class PeopleRestControllerTest {
     }
 
     @Test
-    void resave() { // put
+    void putSave() { // put
         // given
         ResponseEntity<People> response;
         People peopleSave;
 
         // when
         peopleSave = repository.save(people);
-        response = controller.resave(peopleSave.getId(), peopleSave);
+        response = controller.putSave(peopleSave.getId(), peopleSave);
 
         // then
         assertEquals(response.getBody(), peopleSave);
@@ -144,7 +135,7 @@ class PeopleRestControllerTest {
         people.setPatients(patients);
         peopleSave = repository.save(people);
         peopleSave.setName("II");
-        response = controller.reSave(peopleSave.getId(), peopleSave);
+        response = controller.patchSave(peopleSave.getId(), peopleSave);
 
         // then
         assertEquals(response.getBody(), peopleSave);

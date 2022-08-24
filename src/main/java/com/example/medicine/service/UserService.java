@@ -1,16 +1,17 @@
 package com.example.medicine.service;
 
-import com.example.medicine.domain.User;
+import com.example.medicine.model.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<User> findAll();
+    ResponseEntity<List<User>> findAll();
 
-    User findById(Long id);
+    ResponseEntity<User> findById(Long id);
 
-    User save(User users);
+    ResponseEntity<User> save(User users);
 
-    void delete(Long id);
+    ResponseEntity<User> delete(Long id);
 }

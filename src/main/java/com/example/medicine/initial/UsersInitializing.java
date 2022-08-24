@@ -1,8 +1,8 @@
 package com.example.medicine.initial;
 
-import com.example.medicine.domain.Role;
-import com.example.medicine.domain.User;
-import com.example.medicine.service.UserService;
+import com.example.medicine.model.Role;
+import com.example.medicine.model.User;
+import com.example.medicine.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UsersInitializing implements CommandLineRunner {
 
-    private UserService userService;
+    private UserRepository repository;
 
     @Override
     public void run(String... args) throws Exception {
-        if(userService.findAll().size() == 0) {
-            userService.save(
+        if(repository.findAll().size() == 0) {
+            repository.save(
                     new User(
                             "user",
                             "password",

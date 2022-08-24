@@ -2,7 +2,6 @@ package com.example.medicine.security;
 
 import com.example.medicine.service.serviceimpl.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +23,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    private JmsTemplate jmsTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,7 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try{
                 username = jwtUtil.getUsernameFromToken(jwt);
             }catch(Exception e){
-                jmsTemplate.convertAndSend("tokenIsInvalid", e.getMessage());
+                System.out.println(e.getMessage());
             }
         }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){

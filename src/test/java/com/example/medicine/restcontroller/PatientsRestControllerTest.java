@@ -1,23 +1,21 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.Patients;
+import com.example.medicine.model.Patients;
 import com.example.medicine.repository.PatientsRepository;
 import com.example.medicine.service.PatientsService;
 import com.example.medicine.service.serviceimpl.PatientsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -29,9 +27,6 @@ class PatientsRestControllerTest {
 
     @Autowired
     private PatientsRepository repository;
-
-    @Mock
-    private JmsTemplate jmsTemplate;
 
     private Patients patients;
 
@@ -46,7 +41,7 @@ class PatientsRestControllerTest {
                 "44566"
         );
         service = new PatientsServiceImpl(repository);
-        controller = new PatientsRestController(service, repository, jmsTemplate);
+        controller = new PatientsRestController(service);
     }
 
     @Test
@@ -97,7 +92,7 @@ class PatientsRestControllerTest {
         // when
         patientsSave = repository.save(patients);
         patientsSave.setPatients_type_policy("2323132");
-        response = controller.resave(patientsSave.getPatients_id(), patientsSave);
+        response = controller.putSave(patientsSave.getPatients_id(), patientsSave);
 
         // then
         assertEquals(response.getBody(), patientsSave);
@@ -111,7 +106,7 @@ class PatientsRestControllerTest {
 
         // when
         patientsSave = repository.save(patients);
-        response = controller.reSave(patientsSave.getPatients_id(), patientsSave);
+        response = controller.patchSave(patientsSave.getPatients_id(), patientsSave);
 
         // then
         assertEquals(response.getBody(), patientsSave);

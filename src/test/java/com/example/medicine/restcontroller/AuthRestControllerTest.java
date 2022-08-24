@@ -1,7 +1,7 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.Role;
-import com.example.medicine.domain.User;
+import com.example.medicine.model.Role;
+import com.example.medicine.model.User;
 import com.example.medicine.repository.UserRepository;
 import com.example.medicine.security.JwtResponse;
 import com.example.medicine.security.JwtUtil;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,9 +34,6 @@ class AuthRestControllerTest {
     @Autowired
     private UserRepository repository;
 
-    @Mock
-    private JmsTemplate jmsTemplate;
-
     private User user;
 
     @BeforeEach
@@ -48,7 +44,7 @@ class AuthRestControllerTest {
                 Role.ADMIN
         );
         jwtUtil = new JwtUtil();
-        service = new UserServiceImpl(repository, jmsTemplate);
+        service = new UserServiceImpl(repository);
         controller = new AuthRestController(jwtUtil, service, manager);
         service.save(user);
     }

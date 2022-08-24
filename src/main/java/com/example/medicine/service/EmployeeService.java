@@ -1,16 +1,21 @@
 package com.example.medicine.service;
 
-import com.example.medicine.domain.Employee;
+import com.example.medicine.model.Employee;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    List<Employee> findAll();
+    ResponseEntity<List<Employee>> findAll();
 
-    Employee findById(Long id);
+    ResponseEntity<Employee> findById(Long id);
 
-    Employee save(Employee employee);
+    ResponseEntity<Employee> save(Employee employee);
 
-    void delete(Long id);
+    ResponseEntity<Employee> putSave(Long id, Employee employee);
+
+    ResponseEntity<Employee> patchSave(Long id, Employee employee);
+
+    ResponseEntity<Employee> delete(Long id);
 }

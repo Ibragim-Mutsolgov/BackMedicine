@@ -1,11 +1,15 @@
 package com.example.medicine.service.serviceimpl;
 
-import com.example.medicine.domain.Work;
+import com.example.medicine.model.Employee;
+import com.example.medicine.model.Offices;
+import com.example.medicine.model.People;
+import com.example.medicine.model.Work;
 import com.example.medicine.repository.WorkRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
 import java.util.List;
@@ -41,39 +45,74 @@ class WorkServiceImplTest {
     @Test
     void findAll() {
         // given
-        List<Work> list;
+        ResponseEntity<List<Work>> list;
 
         // when
         list = service.findAll();
 
         // then
-        assertEquals(list.size(), 0);
+        assertEquals(list.getBody().size(), 0);
     }
 
     @Test
     void findById() {
         // given
+        ResponseEntity<Work> response;
         Work workSave;
 
         // when
         workSave = repository.save(work);
-        work = service.findById(workSave.getWork_id());
+        response = service.findById(workSave.getWork_id());
 
         // then
-        assertEquals(work, workSave);
+        assertEquals(response.getBody(), workSave);
     }
 
     @Test
     void save() {
         // given
+        ResponseEntity<Work> response;
         Work workSave;
 
         // when
-        workSave = service.save(work);
-        work = repository.getById(workSave.getWork_id());
+        response = service.save(work);
+        workSave = repository.getById(response.getBody().getWork_id());
 
         // then
-        assertEquals(workSave, work);
+        assertEquals(response.getBody(), workSave);
+    }
+
+    @Test
+    public void putSave() {
+        // given
+        ResponseEntity<Work> response;
+        Work workSave;
+
+        // when
+        workSave = repository.save(work);
+        work.setEmployee(new Employee(70L, ""));
+        work.setOffices(new Offices(
+                "205B"
+        ));
+        response = service.patchSave(workSave.getWork_id(), work);
+
+        // then
+        assertEquals(response.getBody().getEmployee(), new Employee(70L, ""));
+    }
+
+    @Test
+    public void patchSave() {
+        // given
+        ResponseEntity<Work> response;
+        Work workSave;
+
+        // when
+        workSave = repository.save(work);
+        work.setEmployee(new Employee(69L, ""));
+        response = service.putSave(workSave.getWork_id(), work);
+
+        // then
+        assertEquals(response.getBody().getEmployee(), new Employee(69L, ""));
     }
 
     @Test

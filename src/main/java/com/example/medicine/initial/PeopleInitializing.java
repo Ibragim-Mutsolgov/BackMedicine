@@ -1,15 +1,14 @@
 package com.example.medicine.initial;
 
-import com.example.medicine.domain.Employee;
-import com.example.medicine.domain.Patients;
-import com.example.medicine.domain.People;
-import com.example.medicine.service.PeopleService;
+import com.example.medicine.model.Employee;
+import com.example.medicine.model.Patients;
+import com.example.medicine.model.People;
+import com.example.medicine.repository.PeopleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Slf4j
@@ -17,12 +16,12 @@ import java.util.Date;
 @AllArgsConstructor
 public class PeopleInitializing implements CommandLineRunner {
 
-    private PeopleService peopleService;
+    private PeopleRepository repository;
 
     @Override
     public void run(String... args) throws Exception {
-        if(peopleService.findAll().size() == 0){
-            peopleService.save(
+        if(repository.findAll().size() == 0){
+            repository.save(
                     new People(
                             "Ivanov",
                             "Ivan",

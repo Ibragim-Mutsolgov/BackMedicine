@@ -1,23 +1,21 @@
 package com.example.medicine.restcontroller;
 
-import com.example.medicine.domain.Employee;
+import com.example.medicine.model.Employee;
 import com.example.medicine.repository.EmployeeRepository;
 import com.example.medicine.service.EmployeeService;
 import com.example.medicine.service.serviceimpl.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +28,6 @@ class EmployeeRestControllerTest {
     @Autowired
     private EmployeeRepository repository;
 
-    @Mock
-    private JmsTemplate jmsTemplate;
-
     private Employee employee;
 
     private final Long id = 1L;
@@ -44,7 +39,7 @@ class EmployeeRestControllerTest {
                 "Ivanov"
         );
         service = new EmployeeServiceImpl(repository);
-        controller = new EmployeeRestController(service, repository, jmsTemplate);
+        controller = new EmployeeRestController(service);
     }
 
     @Test
@@ -94,7 +89,7 @@ class EmployeeRestControllerTest {
 
         // when
         employeeSave = repository.save(employee);
-        response = controller.resave(employeeSave.getEmployee_id(), employeeSave);
+        response = controller.putSave(employeeSave.getEmployee_id(), employeeSave);
 
         // then
         assertEquals(response.getBody(), employeeSave);
@@ -108,7 +103,7 @@ class EmployeeRestControllerTest {
 
         // when
         employeeSave = repository.save(employee);
-        response = controller.reSave(employeeSave.getEmployee_id(), employeeSave);
+        response = controller.patchSave(employeeSave.getEmployee_id(), employeeSave);
 
         // then
         assertEquals(response.getBody(), employeeSave);

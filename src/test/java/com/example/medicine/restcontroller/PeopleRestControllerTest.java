@@ -121,7 +121,8 @@ class PeopleRestControllerTest {
         People peopleSave;
         Employee employee = new Employee(
                 2L,
-                "205B"
+                "205B",
+                null
         );
         Patients patients = new Patients(
                 3L,

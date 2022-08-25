@@ -1,5 +1,6 @@
 package com.example.medicine.initial;
 
+import com.example.medicine.model.DoctorsPosition;
 import com.example.medicine.model.Employee;
 import com.example.medicine.model.Patients;
 import com.example.medicine.model.People;
@@ -9,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -44,7 +47,7 @@ public class PeopleInitializing implements CommandLineRunner {
                                     "56465646"
                             ),
                             new Employee(
-                                    "Врач"
+                                    "заместитель руководителя - федерального эксперта по медико-социальной экспертизе"
                             )
                     )
             );

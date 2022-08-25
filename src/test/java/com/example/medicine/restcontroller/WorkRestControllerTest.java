@@ -108,7 +108,8 @@ class WorkRestControllerTest {
         Work workSave;
         Employee employee = new Employee(
                 2L,
-                "II"
+                "II",
+                null
         );
         Offices offices = new Offices(
                 3L,

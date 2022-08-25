@@ -90,14 +90,14 @@ class WorkServiceImplTest {
 
         // when
         workSave = repository.save(work);
-        work.setEmployee(new Employee(70L, ""));
+        work.setEmployee(new Employee(70L, "", null));
         work.setOffices(new Offices(
                 "205B"
         ));
         response = service.patchSave(workSave.getWork_id(), work);
 
         // then
-        assertEquals(response.getBody().getEmployee(), new Employee(70L, ""));
+        assertEquals(response.getBody().getEmployee(), new Employee(70L, "", null));
     }
 
     @Test
@@ -108,11 +108,11 @@ class WorkServiceImplTest {
 
         // when
         workSave = repository.save(work);
-        work.setEmployee(new Employee(69L, ""));
+        work.setEmployee(new Employee(69L, "", null));
         response = service.putSave(workSave.getWork_id(), work);
 
         // then
-        assertEquals(response.getBody().getEmployee(), new Employee(69L, ""));
+        assertEquals(response.getBody().getEmployee(), new Employee(69L, "", null));
     }
 
     @Test

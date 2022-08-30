@@ -23,6 +23,10 @@ public class Patients {
 
     private String patients_type_policy;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "patients_patients_id", referencedColumnName = "employee_id")
+    private Employee employee;
+
     public Patients(String patients_number_ambulant_card, String patients_policy, String patients_type_policy) {
         this.patients_number_ambulant_card = patients_number_ambulant_card;
         this.patients_policy = patients_policy;

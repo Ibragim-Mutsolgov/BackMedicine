@@ -1,5 +1,6 @@
 package com.example.medicine.service;
 
+import com.example.medicine.model.Employee;
 import com.example.medicine.model.People;
 import org.springframework.http.ResponseEntity;
 
@@ -10,6 +11,8 @@ public interface PeopleService {
     ResponseEntity<List<People>> findAll();
 
     ResponseEntity<People> findById(Long id);
+
+    ResponseEntity<People> findByEmployeeId(Employee employee);
 
     ResponseEntity<People> save(People people);
 

@@ -1,5 +1,6 @@
 package com.example.medicine.restcontroller;
 
+import com.example.medicine.model.Employee;
 import com.example.medicine.model.People;
 import com.example.medicine.service.PeopleService;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Embeddable;
 import java.util.List;
 
 @RestController
@@ -25,6 +27,11 @@ public class PeopleRestController {
     @GetMapping("/{id}")
     public ResponseEntity<People> findById(@PathVariable Long id){
         return service.findById(id);
+    }
+
+    @GetMapping("/emp")
+    public ResponseEntity<People> findByEmployeeId(@RequestBody Employee employee) {
+        return service.findByEmployeeId(employee);
     }
 
     @PostMapping

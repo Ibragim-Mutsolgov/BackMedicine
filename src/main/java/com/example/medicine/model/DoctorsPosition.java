@@ -20,37 +20,37 @@ public class DoctorsPosition {
     private Long id;
 
     @Column(name = "parent_id", nullable = true)
-    private int parent_id;
+    private Integer parent_id;
 
     @Column(name = "work_position", nullable = false)
     private String work_position;
 
     @Column(name = "med", nullable = true)
-    private int med;
+    private Integer med;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "date_end", nullable = true)
     private Date date_end;
 
     @Column(name = "form_30", nullable = true)
-    private int form_30;
+    private Integer form_30;
 
     @Column(name = "need_cert", nullable = true)
-    private int need_cert;
+    private Integer need_cert;
 
     @Column(name = "educ", nullable = true)
-    private int educ;
+    private Integer educ;
 
     @Column(name = "zs", nullable = false)
     private int zs;
 
     @Column(name = "show_staff_list", nullable = true)
-    private int show_staff_list;
+    private Integer show_staff_list;
 
     @Column(name = "federal_code", nullable = true)
-    private int federal_code;
+    private Integer federal_code;
 
-    public DoctorsPosition(int parent_id, String work_position, int med, Date date_end, int form_30, int need_cert, int educ, int zs, int show_staff_list, int federal_code) {
+    public DoctorsPosition(Integer parent_id, String work_position, Integer med, Date date_end, Integer form_30, Integer need_cert, Integer educ, int zs, Integer show_staff_list, Integer federal_code) {
         this.parent_id = parent_id;
         this.work_position = work_position;
         this.med = med;

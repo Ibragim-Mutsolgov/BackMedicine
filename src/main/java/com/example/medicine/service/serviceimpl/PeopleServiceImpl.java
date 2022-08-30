@@ -32,6 +32,13 @@ public class PeopleServiceImpl implements PeopleService {
     }
 
     @Override
+    public ResponseEntity<People> findByEmployeeId(Employee employee) {
+        return peopleRepository.findPeopleByEmployee(employee)
+                .map(people -> ResponseEntity.ok().body(people))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Override
     public ResponseEntity<People> save(People people) {
         return ResponseEntity.ok().body(peopleRepository.save(people));
     }

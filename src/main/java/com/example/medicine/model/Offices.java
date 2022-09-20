@@ -3,6 +3,7 @@ package com.example.medicine.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Offices {
+public class Offices extends RepresentationModel<Offices> {
 
     @Id
     @Column(name = "offices_id", nullable = false)

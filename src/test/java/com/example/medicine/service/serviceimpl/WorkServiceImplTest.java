@@ -2,7 +2,6 @@ package com.example.medicine.service.serviceimpl;
 
 import com.example.medicine.model.Employee;
 import com.example.medicine.model.Offices;
-import com.example.medicine.model.People;
 import com.example.medicine.model.Work;
 import com.example.medicine.repository.WorkRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,14 +89,14 @@ class WorkServiceImplTest {
 
         // when
         workSave = repository.save(work);
-        work.setEmployee(new Employee(70L, "", null));
+        work.setEmployee(new Employee(70L, ""));
         work.setOffices(new Offices(
                 "205B"
         ));
         response = service.patchSave(workSave.getWork_id(), work);
 
         // then
-        assertEquals(response.getBody().getEmployee(), new Employee(70L, "", null));
+        assertEquals(response.getBody().getEmployee(), new Employee(70L, ""));
     }
 
     @Test
@@ -108,11 +107,11 @@ class WorkServiceImplTest {
 
         // when
         workSave = repository.save(work);
-        work.setEmployee(new Employee(69L, "", null));
+        work.setEmployee(new Employee(69L, ""));
         response = service.putSave(workSave.getWork_id(), work);
 
         // then
-        assertEquals(response.getBody().getEmployee(), new Employee(69L, "", null));
+        assertEquals(response.getBody().getEmployee(), new Employee(69L, ""));
     }
 
     @Test

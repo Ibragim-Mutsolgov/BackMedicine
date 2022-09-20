@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,12 +35,12 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token){
-        return !isTokenExpired(token);
+        return isTokenExpired(token);
     }
 
     public Boolean validateToken(String token, UserDetails userDetails){
         String username = getUsernameFromToken(token);
-        return Objects.equals(username, userDetails.getUsername()) && !isTokenExpired(token);
+        return Objects.equals(username, userDetails.getUsername()) && isTokenExpired(token);
     }
 
     public String generateToken(UserDetails userDetails){
@@ -80,6 +79,6 @@ public class JwtUtil {
 
     private boolean isTokenExpired(String token){
         Date date = getExpirationDateFromToken(token);
-        return date != null && date.before(new Date());
+        return date == null || !date.before(new Date());
     }
 }

@@ -30,8 +30,7 @@ class EmployeeServiceImplTest {
         service = new EmployeeServiceImpl(repository);
         employee = new Employee(
                 id,
-                "Ivanov Ivan Ivanovich",
-                null
+                "Ivanov Ivan Ivanovich"
         );
     }
 

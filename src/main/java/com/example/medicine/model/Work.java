@@ -3,6 +3,7 @@ package com.example.medicine.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Work {
+public class Work extends RepresentationModel<Work> {
 
     @Id
     @Column(name = "work_id", nullable = false)

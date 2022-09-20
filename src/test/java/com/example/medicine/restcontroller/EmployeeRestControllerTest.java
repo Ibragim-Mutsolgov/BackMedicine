@@ -36,8 +36,7 @@ class EmployeeRestControllerTest {
     void setUp() {
         employee = new Employee(
                 id,
-                "Ivanov",
-                null
+                "Ivanov"
         );
         service = new EmployeeServiceImpl(repository);
         controller = new EmployeeRestController(service);

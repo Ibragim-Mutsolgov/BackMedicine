@@ -1,8 +1,6 @@
 package com.example.medicine.service.serviceimpl;
-
-import com.example.medicine.model.Offices;
+/*
 import com.example.medicine.model.Patients;
-import com.example.medicine.model.People;
 import com.example.medicine.repository.PatientsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,3 +120,5 @@ class PatientsServiceImplTest {
         assertEquals(repository.findById(patientsSave.getPatients_id()), Optional.empty());
     }
 }
+
+ */

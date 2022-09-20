@@ -1,5 +1,5 @@
 package com.example.medicine.restcontroller;
-
+/*
 import com.example.medicine.model.Patients;
 import com.example.medicine.repository.PatientsRepository;
 import com.example.medicine.service.PatientsService;
@@ -75,7 +75,7 @@ class PatientsRestControllerTest {
         // given
         ResponseEntity<Patients> response;
         patients.setPatients_id(13L);
-
+getPatients_number_ambulant_card
         // when
         response = controller.save(patients);
 
@@ -126,3 +126,5 @@ class PatientsRestControllerTest {
         assertEquals(response.getBody(), patientsSave);
     }
 }
+
+ */
